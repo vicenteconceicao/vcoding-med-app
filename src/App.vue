@@ -1,32 +1,51 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+  <v-app>
+    <transition name="slide-login" mode="out-in">
+      <TemplateLogin v-if="$route.name === 'Login'" />
+      <TemplateApp v-else />
+    </transition>
+  </v-app>
 </template>
 
+<script>
+import TemplateLogin from "./template/login/TemplateLogin";
+import TemplateApp from "./template/application/TemplateApp";
+
+export default {
+  name: "App",
+
+  components: {
+    TemplateLogin,
+    TemplateApp
+  }
+};
+</script>
+
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+
+@keyframes slide-login-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
+@keyframes slide-login-out {
+  from {
+    opacity: 1;
   }
+  to {
+    opacity: 0;
+  }
+}
+
+.slide-login-enter-active {
+  animation: slide-login-in 0.3s ease-in-out;
+}
+
+.slide-login-leave-active {
+  animation: slide-login-out 0.3s ease-in-out;
 }
 </style>
