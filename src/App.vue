@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app id="app">
     <transition name="slide-login" mode="out-in">
       <TemplateLogin v-if="$route.name === 'Login'" />
       <TemplateApp v-else />
@@ -22,6 +22,10 @@ export default {
 </script>
 
 <style lang="scss">
+
+#app{
+  background-color: #f5f5f5;
+}
 
 @keyframes slide-login-in {
   from {

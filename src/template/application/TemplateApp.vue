@@ -28,6 +28,7 @@ export default {
 </script>
 
 <style lang="scss">
+
 @keyframes slide-in {
   from {
     transform: translateY(-30px);

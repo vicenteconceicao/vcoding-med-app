@@ -8,12 +8,11 @@ Vue.use({
         })
 
         Vue.prototype.$http.interceptors.request.use(config => {
-            console.log(config.method)
             return config
         })
 
-        Vue.prototype.$http.interceptors.response.use(res => {
-            return res
-        })
+        // Vue.prototype.$http.interceptors.response.use(res => {
+        //     return res
+        // })
     }
 })

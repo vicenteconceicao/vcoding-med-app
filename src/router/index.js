@@ -2,12 +2,13 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Pacientes from '../views/patient/Pacientes.vue'
+import Paciente from '../views/patient/Paciente'
 import Login from '../views/Login.vue'
 import Atendimentos from '../views/Atendimentos.vue'
 
 Vue.use(VueRouter)
 
-  const routes = [
+const routes = [
   {
     path: '/',
     name: 'Home',
@@ -16,8 +17,12 @@ Vue.use(VueRouter)
   {
     path: '/pacientes',
     name: 'Pacientes',
-    component: Pacientes
+    component: Pacientes,
   },
+  { 
+    path: '/paciente/:id', 
+    component: Paciente, 
+    props: true },
   {
     path: '/atendimentos',
     name: 'Atendimentos',
@@ -36,10 +41,10 @@ Vue.use(VueRouter)
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
   },
-  {
+  /*{
     path: '*',
     redirect: '/login'
-  },
+  },*/
 ]
 
 const router = new VueRouter({

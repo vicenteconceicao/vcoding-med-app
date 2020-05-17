@@ -30,7 +30,6 @@ export default new Vuex.Store({
       commit('alterarDrawer')
     },
     setUser({ commit }, payload){
-      console.log(payload)
       commit('setUser', payload)
     }
   },
