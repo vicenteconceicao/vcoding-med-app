@@ -10,7 +10,7 @@
             <v-icon size="100" color="primary">mdi-account-circle</v-icon>
           </v-row>
           <v-form v-model="isValid">
-            <v-text-field :rules="[rules.required]" v-model="username" label="Usuário" append-icon="mdi-account" type="text"></v-text-field>
+            <v-text-field @keyup.enter="$refs.password.focus()" :rules="[rules.required]" v-model="username" label="Usuário" append-icon="mdi-account" type="text"></v-text-field>
             <v-text-field
               :rules="[rules.required]"
               v-model="password"
@@ -18,6 +18,8 @@
               :type="show1 ? 'text' : 'password'"
               :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
               @click:append="show1 = !show1"
+              @keyup.enter="login"
+              ref="password"
             ></v-text-field>
           </v-form>
         </v-container>
