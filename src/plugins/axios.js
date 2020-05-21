@@ -1,10 +1,11 @@
 import Vue from 'vue'
 import axios from 'axios'
+import { baseApiUrl } from '../config/global'
 
 Vue.use({
     install(Vue){
         Vue.prototype.$http = axios.create({
-            baseURL: 'http://192.168.0.14:3333/'
+            baseURL: baseApiUrl
         })
 
         Vue.prototype.$http.interceptors.request.use(config => {

@@ -1,30 +1,42 @@
 <template>
-  <v-row v-if="patient">
-    <v-col>
-      <v-card class="mx-auto" outlined>
-        <v-list-item three-line>
-          <v-list-item-avatar tile size="80" color="grey">
-            <v-img src="https://lorempixel.com/200/200/"></v-img>
-          </v-list-item-avatar>
-          <v-list-item-content>
-            <div class="title font-weight-bold primary--text">{{patient.name}}</div>
-            <v-list-item-title>Idade: 26</v-list-item-title>
-            <v-list-item-subtitle>Última consulta: 01/05/2020</v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
-      </v-card>
-    </v-col>
-  </v-row>
+  <div class="cardPatient">
+    <v-card class="pa-2" outlined>
+      <v-row justify="space-between">
+        <v-col cols="auto">
+          <v-avatar size="100" color="primary">
+            <v-img src="https://cdn.vuetifyjs.com/images/cards/store.jpg"></v-img>
+          </v-avatar>
+        </v-col>
+        <v-col>
+          <v-card-title class="primary--text">{{patient.name}}</v-card-title>
+          <v-card-text>Idade: {{age}}</v-card-text>
+        </v-col>
+      </v-row>
+    </v-card>
+  </div>
 </template>
 
 <script>
 export default {
-    props:{
-        patient: Object
+  props: {
+    patient: Object
+  },
+  computed: {
+    age() {
+      let age = 0;
+      if (this.patient.birthday) {
+        let now = new Date();
+        let birthday = this.patient.birthday.split("/");
+        age = now.getFullYear() - birthday[2];
+        if (birthday[0] < now.getDay() && birthday[1] <= now.getMonth()) {
+          age--;
+        }
+      }
+      return age;
     }
-}
+  }
+};
 </script>
 
 <style>
-
 </style>

@@ -7,13 +7,12 @@
             <div class="title">Bem vindo(a)</div>
           </v-row>
           <v-row align="center" justify="center" class="mb-8">
-            <v-avatar color="primary" size="100">
-              <img alt="Avatar" src="https://avatars0.githubusercontent.com/u/9064066?v=4&s=460" />
-            </v-avatar>
+            <v-icon size="100" color="primary">mdi-account-circle</v-icon>
           </v-row>
-          <v-form>
-            <v-text-field v-model="username" label="Usuário" append-icon="mdi-account" type="text"></v-text-field>
+          <v-form v-model="isValid">
+            <v-text-field :rules="[rules.required]" v-model="username" label="Usuário" append-icon="mdi-account" type="text"></v-text-field>
             <v-text-field
+              :rules="[rules.required]"
               v-model="password"
               label="Senha"
               :type="show1 ? 'text' : 'password'"
@@ -23,7 +22,7 @@
           </v-form>
         </v-container>
         <v-card-actions>
-          <v-btn @click="login" rounded block depressed color="primary" class="elevation-8">Entrar</v-btn>
+          <v-btn :disabled="!isValid" @click="login" block  color="primary" class="elevation-8">Entrar</v-btn>
         </v-card-actions>
       </v-card>
       <v-container>
@@ -31,18 +30,16 @@
         <v-btn text small block>Não tem uma conta? Cadastre-se</v-btn>
       </v-container>
     </v-col>
-    <v-overlay :value="loading">
-      <v-progress-circular indeterminate size="64"></v-progress-circular>
-    </v-overlay>
     <v-snackbar top v-model="snackbar">
       {{ text }}
-      <v-btn color="pink" text @click="snackbar = false">Fechar</v-btn>
+      <v-btn color="primary" text @click="snackbar = false">Fechar</v-btn>
     </v-snackbar>
   </v-row>
 </template>
 
 <script>
 import { mapActions } from "vuex";
+import { userKey } from "@/config/global";
 
 export default {
   name: "Login",
@@ -54,42 +51,41 @@ export default {
       password: "",
       show1: false,
       loading: false,
+      isValid: false,
       rules: {
-        required: value => !!value || "Favor informe o e-mail.",
-        min: v => v.length >= 8 || "Min 8 characters",
-        emailMatch: () => "The email and password you entered don't match"
+        required: value => !!value || "Campo obrigatório!",
       }
     };
   },
-
   methods: {
-    ...mapActions(["setUser"]),
+    ...mapActions(["setUser", "setLoading"]),
 
     login() {
-      this.loading = true;
-
+      this.setLoading(true);
       let body = {
         username: this.username,
         password: this.password
       };
-
       this.$http
         .post("authenticate", body)
         .then(res => {
-          let user = {
-            name: res.data.name,
-            avatar: "https://lorempixel.com/200/200/"
-          };
-          this.setUser(user);
-          this.$http.defaults.headers.common[
-            "Authorization"
-          ] = `bearer ${res.data.token}`;
-          this.$router.push("/");
+          this.$http.defaults.headers.common["Authorization"] = `bearer ${res.data.token}`;
+          this.setLoading(false);
+
+          /*  VEFICIANDO SE USUÁRIO TEM PERFIL CADASTRADO */
+          if (res.data.hasProfile) {
+            this.setUser(res.data);
+            localStorage.setItem(userKey, JSON.stringify(res.data))
+            this.$router.push("/");
+
+          } else {
+            this.$router.push("/perfil");
+          }
         })
         .catch(error => {
+          this.setLoading(false);
           delete this.$http.defaults.headers.common["Authorization"];
-          this.loading = false;
-          this.text = error.response.data.message;
+          this.text = error.response ?  error.response.data.message : error;
           this.snackbar = true;
         });
     }

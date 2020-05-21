@@ -25,7 +25,8 @@ export default new Vuetify({
             playstation: 'mdi-playstation',
             switch: 'mdi-nintendo-switch',
             content_save: 'mdi-content-save',
-            close_circle: 'mdi-close-circle'
+            close_circle: 'mdi-close-circle',
+            delete: 'mdi-delete'
         },
     },
 });

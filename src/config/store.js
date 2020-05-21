@@ -7,7 +7,8 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     drawer: false,
-    user: null
+    user: null,
+    loading: false,
   },
   mutations: {
     alterarDrawer(state){
@@ -23,6 +24,9 @@ export default new Vuex.Store({
       }else{
         delete axios.defaults.headers.common['Authorization']
       }
+    },
+    setLoading(state, payload){
+      state.loading = payload
     }
   },
   actions: {
@@ -31,6 +35,9 @@ export default new Vuex.Store({
     },
     setUser({ commit }, payload){
       commit('setUser', payload)
+    },
+    setLoading({ commit }, payload){
+      commit('setLoading', payload)
     }
   },
 })

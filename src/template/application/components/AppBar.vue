@@ -1,32 +1,28 @@
 <template>
-  <v-app-bar :clipped-left="$vuetify.breakpoint.lgAndUp" app color="primary" dark>
+  <v-app-bar clipped-left app color="primary" dark>
     <v-app-bar-nav-icon @click.stop="alterarDrawer" />
     <v-toolbar-title style="width: 300px" class="ml-0 pl-4">
       <span class="hidden-sm-and-down">Prontuário Eletrônico</span>
     </v-toolbar-title>
     <v-spacer />
-    <v-badge v-if="user" color="error" content="6" overlap offset-x="20" offset-y="20">
-      <v-btn icon dark>
-        <v-icon>mdi-bell</v-icon>
-      </v-btn>
-    </v-badge>
-    <v-menu v-if="user" offset-y>
+    <v-btn icon>
+      <v-icon>mdi-bell</v-icon>
+    </v-btn>
+    <v-menu offset-y>
       <template v-slot:activator="{ on }">
-        <v-avatar class="ml-4 mr-2" size="32" item v-on="on">
-          <v-img
-            :src="user.avatar"
-            alt="Vuetify"
-          />
+        <v-avatar v-if="user.avatar" class="ml-4 mr-2" size="32" item v-on="on">
+          <v-img :src="user.avatar" alt="Vuetify" />
         </v-avatar>
+        <v-btn icon v-else item v-on="on">
+          <v-icon>mdi-account-circle</v-icon>
+        </v-btn>
       </template>
       <v-card tile>
         <v-list>
           <v-list-item>
             <v-list-item-avatar>
-              <img
-               :src="user.avatar"
-                alt="Vuetify"
-              />
+              <img v-if="user.avatar" :src="user.avatar" alt="Vuetify" />
+              <v-icon size="32" v-else color="primary">mdi-account-circle</v-icon>
             </v-list-item-avatar>
             <v-list-item-content>
               <v-list-item-title>{{ user.name }}</v-list-item-title>
@@ -44,6 +40,14 @@
               </v-list-item-content>
             </v-list-item>
           </v-list-item-group>
+          <v-list-item @click="logout">
+            <v-list-item-icon>
+              <v-icon>mdi-exit-to-app</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>Sair</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
         </v-list>
       </v-card>
     </v-menu>
@@ -52,19 +56,24 @@
 
 <script>
 import { mapActions, mapState } from "vuex";
+import { userKey } from "@/config/global";
 
 export default {
   data: () => ({
     items: [
-      { icon: "mdi-account", title: "Meu Cadastro", url: "/profile" },
-      { icon: "mdi-ballot", title: "Configurações", url: "/settings" },
+      { icon: "mdi-account", title: "Meu Cadastro", url: "/perfil" },
       { icon: "mdi-help", title: "Ajuda", url: "/help" },
-      { icon: "mdi-exit-to-app", title: "Sair", url: "/login" }
+      { icon: "mdi-cog-outline", title: "Configurações", url: "/settings" }
     ]
   }),
-  computed: mapState(['user']),
+  computed: mapState(["user"]),
   methods: {
-    ...mapActions(["alterarDrawer"])
+    ...mapActions(["alterarDrawer", "setUser"]),
+    logout() {
+      localStorage.removeItem(userKey);
+      this.setUser(null);
+      this.$router.push({ name: "Login" });
+    }
   }
 };
 </script>

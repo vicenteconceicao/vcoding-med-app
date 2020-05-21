@@ -5,6 +5,9 @@ import Pacientes from '../views/patient/Pacientes.vue'
 import Paciente from '../views/patient/Paciente'
 import Login from '../views/Login.vue'
 import Atendimentos from '../views/Atendimentos.vue'
+import Configuracoes from '../views/setting/Configuracoes.vue'
+import Usuarios from '../views/user/Usuarios.vue'
+import Perfil from '../views/Perfil.vue'
 
 Vue.use(VueRouter)
 
@@ -29,9 +32,24 @@ const routes = [
     component: Atendimentos
   },
   {
+    path: '/usuarios',
+    name: 'Usuarios',
+    component: Usuarios
+  },
+  {
+    path: '/configuracoes',
+    name: 'Configuracoes',
+    component: Configuracoes
+  },
+  {
     path: '/login',
     name: 'Login',
     component: Login
+  },
+  {
+    path: '/perfil',
+    name: 'Perfil',
+    component: Perfil
   },
   {
     path: '/about',

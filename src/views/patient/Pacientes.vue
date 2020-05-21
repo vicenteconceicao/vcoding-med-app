@@ -1,143 +1,153 @@
 <template>
-  <div>
+  <div class="pacientes">
     <div class="display-1 mb-4">Pacientes</div>
-    <v-data-table
-      :headers="headers"
-      :items="patients"
-      :options.sync="options"
-      :server-items-length="totalDesserts"
-      :loading="loading"
-      fixed-header
-      loading-text="Carregando... Por favor, aguarde"
-      class="elevation-1"
-    >
-      <template v-slot:top>
-        <v-text-field v-model="search" label="Pesquisar" class="mx-4 pt-6"></v-text-field>
-      </template>
-      
-      <template v-slot:item.actions="{ item }">
-        <v-btn
-          icon
-          color="primary"
-          title="Visualizar dados"
-          class="mr-1"
-          @click="irParaDetalhe(item.id)"
-        >
-          <v-icon small>mdi-magnify</v-icon>
-        </v-btn>
-        <v-btn icon color="green" title="Editar Paciente" class="mr-1" @click="editItem(item)">
-          <v-icon small>mdi-pencil</v-icon>
-        </v-btn>
-        <v-btn icon color="red" title="Excluir Paciente" @click="sheet = true">
-          <v-icon small>mdi-delete</v-icon>
-        </v-btn>
-        <v-bottom-sheet v-model="sheet" scrollable>
-          <v-sheet class="text-center" height="200px">
-            <v-btn class="mt-6" color="red" @click="deleteItem(item)">EXCLUIR</v-btn>
-            <div
-              class="py-3"
-            >Você está excluindo o cadastro de um Paciente. Tem certeza que deseja realizar essa exclusão?</div>
-          </v-sheet>
-        </v-bottom-sheet>
-      </template>
-    </v-data-table>
-    <v-dialog v-model="dialog" max-width="800px">
-      <template v-slot:activator="{ on }">
-        <v-btn fixed dark fab bottom right color="pink" class="mb-8" v-on="on">
-          <v-icon>mdi-plus</v-icon>
-        </v-btn>
-      </template>
-      <v-card>
-        <v-card-title>
-          <span class="headline">{{ formTitle }}</span>
-        </v-card-title>
-        <v-card-text>
-          <v-container>
-            <v-row>
-              <v-col>
-                <v-row>
-                  <v-col>
-                    <v-text-field v-model="editedItem.name" label="Nome Completo"></v-text-field>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col cols="6">
-                    <v-text-field
-                      :placeholder="inputConfig.placeholder.cpf"
-                      v-model="editedItem.cpf"
-                      label="CPF"
-                      v-mask="inputConfig.masks.cpf"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="6">
-                    <v-text-field v-model="editedItem.rg" label="RG"></v-text-field>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col cols="6">
-                    <v-text-field
-                      v-model="editedItem.birthday"
-                      :placeholder="inputConfig.placeholder.date"
-                      label="Data Nascimento"
-                      v-mask="inputConfig.masks.date"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="6">
-                    <v-text-field
-                      :placeholder="inputConfig.placeholder.dateTime"
-                      v-model="editedItem.last_prescription"
-                      label="Data Última Precrição"
-                      v-mask="inputConfig.masks.dateTime"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col>
-                    <v-text-field v-model="editedItem.mother_name" label="Nome da Mãe"></v-text-field>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col cols="6">
-                    <v-text-field
-                      :placeholder="inputConfig.placeholder.phone"
-                      v-model="editedItem.phone"
-                      label="Telefone/Celular"
-                      v-mask="inputConfig.masks.phone"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn text color="red darken-1" @click="close">
-            <v-icon dark right>$vuetify.icons.close_circle</v-icon>Cancelar
+    <v-row>
+      <v-col>
+        <!-- DataTable Component -->
+        <DataTable
+          :items="patients"
+          :headers="headers"
+          :loading="loading"
+          :totalDesserts="totalDesserts"
+          :showData="showData"
+          :editData="editData"
+          :deleteData="deleteData"
+          :searchData="searchData"
+          @optionsChanged="options= $event"
+        ></DataTable>
+
+        <!-- snackBar Component -->
+        <v-snackbar bottom v-model="snackbar">
+          {{ snackText }}
+          <v-btn color="primary" text @click="snackbar = false">Fechar</v-btn>
+        </v-snackbar>
+      </v-col>
+    </v-row>
+
+    <!-- Dialog: Create Component -->
+    <v-row justify="center">
+      <v-dialog v-model="dialog" max-width="600px">
+        <template v-slot:activator="{ on }">
+          <!-- FloatButtom Component -->
+          <v-btn fixed dark fab bottom right color="pink" class="mb-8" v-on="on">
+            <v-icon>mdi-plus</v-icon>
           </v-btn>
-          <v-btn text color="primary darken-1" @click="save">
-            <v-icon dark right>$vuetify.icons.content_save</v-icon>Salvar
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-    <v-snackbar bottom v-model="snackbar">
-      {{ text }}
-      <v-btn color="pink" text @click="snackbar = false">Fechar</v-btn>
-    </v-snackbar>
+        </template>
+
+        <!-- Card Component -->
+        <v-card>
+          <!-- Card Title -->
+          <v-card-title>
+            <span class="headline">{{disabled ? "Apagando" : "Cadastro de"}} Paciente</span>
+          </v-card-title>
+          <!-- Card Text -->
+          <v-card-text>
+            <v-container>
+              <v-row>
+                <v-col>
+                  <v-row>
+                    <v-col>
+                      <v-text-field
+                        :disabled="disabled"
+                        v-model="patient.name"
+                        label="Nome Completo"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="6">
+                      <v-text-field
+                        :disabled="disabled"
+                        :placeholder="inputConfig.placeholder.cpf"
+                        v-model="patient.cpf"
+                        label="CPF"
+                        v-mask="inputConfig.masks.cpf"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="6">
+                      <v-text-field :disabled="disabled" v-model="patient.rg" label="RG"></v-text-field>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="6">
+                      <v-text-field
+                        :disabled="disabled"
+                        v-model="patient.birthday"
+                        :placeholder="inputConfig.placeholder.date"
+                        label="Data Nascimento"
+                        v-mask="inputConfig.masks.date"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="6">
+                      <v-text-field
+                        :disabled="disabled"
+                        :placeholder="inputConfig.placeholder.date"
+                        v-model="patient.last_prescription"
+                        label="Data Última Precrição"
+                        v-mask="inputConfig.masks.date"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col>
+                      <v-text-field
+                        :disabled="disabled"
+                        v-model="patient.mother_name"
+                        label="Nome da Mãe"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="6">
+                      <v-text-field
+                        :disabled="disabled"
+                        :placeholder="inputConfig.placeholder.phone"
+                        v-model="patient.phone"
+                        label="Telefone/Celular"
+                        v-mask="inputConfig.masks.phone"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn text color="grey darken-1" @click="closeForm">
+              <v-icon dark right>$vuetify.icons.close_circle</v-icon>Cancelar
+            </v-btn>
+            <v-btn v-if="disabled" text color="red darken-5" @click="saveData">
+              <v-icon dark right>$vuetify.icons.delete</v-icon>Apagar
+            </v-btn>
+            <v-btn v-else text color="primary darken-1" @click="saveData">
+              <v-icon dark right>$vuetify.icons.content_save</v-icon>Salvar
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
   </div>
 </template>
 
 <script>
+import DataTable from "@/components/DataTable";
+
 export default {
   name: "Pacientes",
+  components: {
+    DataTable
+  },
   data: () => ({
-    dialog: false,
+    patients: [],
     loading: true,
-    sheet: false,
     snackbar: false,
-    text: "",
+    dialog: false,
+    disabled: false,
+    mode: "new",
     search: "",
+    permission: "",
+    snackText: "",
     options: {},
     totalDesserts: 0,
     headers: [
@@ -148,12 +158,10 @@ export default {
       { text: "Nome Mãe", value: "mother_name" },
       { text: "Telefone", value: "phone" },
       { text: "Última Prescrição", value: "last_prescription" },
-      { text: "", value: "actions", sortable: false }
+      { text: "", align: "end", value: "actions", sortable: false }
     ],
-    patients: [],
-    editedIndex: -1,
-    editedItem: {
-      id: 0,
+    patient: {
+      id: null,
       name: "",
       rg: null,
       cpf: null,
@@ -162,7 +170,7 @@ export default {
       last_prescription: "",
       phone: ""
     },
-    defaultItem: {
+    patientDefault: {
       name: "",
       rg: null,
       cpf: null,
@@ -194,13 +202,13 @@ export default {
   },
 
   watch: {
-    dialog(val) {
-      val || this.close();
-    },
     options: {
       handler() {
         this.initialize();
       }
+    },
+    mode() {
+      this.disabled = this.mode === "dlt";
     },
     search() {
       this.initialize();
@@ -219,71 +227,105 @@ export default {
         })
         .then(resp => {
           this.patients = resp.data.data;
-          this.totalDesserts = resp.data.total;
+          this.totalDesserts = Number(resp.data.total);
+        })
+        .catch(error => {
+          this.showSnackbar(
+            error.response ? error.response.data.message : error,
+            true
+          );
         })
         .finally(() => {
           this.loading = false;
         });
     },
-
-    editItem(item) {
-      this.editedIndex = this.patients.indexOf(item);
-      this.editedItem = Object.assign({}, item);
+    searchData(search) {
+      this.search = search;
+    },
+    saveData() {
+      switch (this.mode) {
+        case "new":
+          this.create();
+          break;
+        case "upd":
+          this.update();
+          break;
+        case "dlt":
+          this.delete();
+          break;
+        default:
+      }
+    },
+    showData(patient) {
+      this.$router.push(`paciente/${patient.id}`);
+    },
+    editData(patient) {
+      this.patient = patient;
+      this.mode = "upd";
       this.dialog = true;
     },
-
-    deleteItem(item) {
-      this.$http
-        .delete(`/patients/${item.id}`)
-        .then(() => {
-          this.showSnackbar("Paciente excluído com sucesso!", true);
-        })
-        .catch(error => {
-          this.showSnackbar(error.response.data.message, true);
-        });
-      const index = this.patients.indexOf(item);
-      this.patients.splice(index, 1);
-      this.sheet = false;
+    deleteData(patient) {
+      this.patient = patient;
+      this.mode = "dlt";
+      this.dialog = true;
     },
-
-    close() {
+    closeForm() {
+      this.patient = this.patientDefault;
+      this.mode = "new";
       this.dialog = false;
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      });
-    },
-
-    save() {
-      if (this.editedIndex > -1) {
-        this.$http
-          .put(`/patients/${this.editedItem.id}`, this.editedItem)
-          .then(() => {
-            this.showSnackbar("Paciente alterado com Sucesso!", true);
-          })
-          .catch(error => {
-            this.showSnackbar(error.response.data.message, true);
-          });
-        Object.assign(this.patients[this.editedIndex], this.editedItem);
-      } else {
-        this.$http
-          .post("/patients", this.editedItem)
-          .then(() => {
-            this.showSnackbar("Paciente cadastrado com Sucesso!", true);
-          })
-          .catch(error => {
-            this.showSnackbar(error.response.data.message, true);
-          });
-        this.patients.push(this.editedItem);
-      }
-      this.close();
-    },
-    irParaDetalhe(id) {
-      this.$router.push(`paciente/${id}`);
     },
     showSnackbar(text, visible) {
-      this.text = text;
+      this.snackText = text;
       this.snackbar = visible;
+    },
+
+    /* CRUD METHODS. */
+    create() {
+      this.$http
+        .post("/patients", this.patient)
+        .then(() => {
+          this.showSnackbar("Paciente cadastrado com Sucesso!", true);
+          this.patients.push(this.patient);
+          this.closeForm();
+        })
+        .catch(error => {
+          this.showSnackbar(
+            error.response ? error.response.data.message : error,
+            true
+          );
+        });
+    },
+    update() {
+      let index = this.patients.indexOf(this.patient);
+      this.$http
+        .put(`/patients/${this.patient.id}`, this.patient)
+        .then(() => {
+          Object.assign(this.patients[index], this.patient);
+          this.showSnackbar("Paciente alterado com Sucesso!", true);
+          this.closeForm();
+        })
+        .catch(error => {
+          this.showSnackbar(
+            error.response ? error.response.data.message : error,
+            true
+          );
+        });
+    },
+    delete() {
+      let index = this.patients.indexOf(this.patient);
+      this.$http
+        .delete(`/patients/${this.patient.id}`)
+        .then(() => {
+          this.patients.splice(index, 1);
+          this.showSnackbar("Paciente excluído com sucesso!", true);
+          this.closeForm();
+        })
+        .catch(error => {
+          this.showSnackbar(
+            error.response ? error.response.data.message : error,
+            true
+          );
+        });
     }
   }
 };
