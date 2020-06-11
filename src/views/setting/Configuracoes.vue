@@ -1,5 +1,7 @@
 <template>
-  <div class="display-1 mb-4">Configurações</div>
+<div class="config">
+    <router-view />
+ </div>
 </template>
 
 <script>

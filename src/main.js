@@ -13,6 +13,6 @@ new Vue({
   router,
   store,
   vuethemask,
-  vuetify,
+  vuetify,  
   render: h => h(App)
 }).$mount('#app')

@@ -33,8 +33,8 @@ export default {
       if (!userData) {
         this.$router.push({name:'Login'});
       } else {
+        this.$http.defaults.headers.common["Authorization"] = `bearer ${userData.token}`;
         this.setUser(userData);
-        console.log("logado");
         this.$router.push("/");
       }
       this.setLoading(false);

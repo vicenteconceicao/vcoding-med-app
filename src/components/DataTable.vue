@@ -9,7 +9,7 @@
     class="elevation-1"
   >
     <template v-slot:top>
-      <v-text-field v-model="search" label="Pesquise por usuário ou permissão" class="mx-4 pt-6"></v-text-field>
+      <v-text-field v-model="search" label="Pesquise" class="mx-4 pt-6"></v-text-field>
     </template>
     <template v-slot:item.actions="{ item }">
       <v-btn icon color="primary" title="Visualizar dados" class="mr-1" @click="showData(item)">
