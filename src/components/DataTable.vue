@@ -6,11 +6,39 @@
     :server-items-length="totalDesserts"
     :loading="loading"
     loading-text="Carregando... Por favor, aguarde."
-    class="elevation-1"
+    class="elevation-1 pa-4"
+    fixed-header
   >
     <template v-slot:top>
       <v-text-field v-model="search" label="Pesquise" class="mx-4 pt-6"></v-text-field>
     </template>
+
+    <template v-slot:item.available="{ item }" class="text-center">
+      <v-chip v-if="item.available === true" class="ma-2" color="green" text-color="white">
+        <v-avatar left>
+          <v-icon>mdi-checkbox-marked-circle</v-icon>
+        </v-avatar>Sim
+      </v-chip>
+      <v-chip v-else class="ma-2" color="red" text-color="white">
+        <v-avatar left>
+          <v-icon>mdi-close-circle</v-icon>
+        </v-avatar>Não
+      </v-chip>
+    </template>
+
+    <template v-slot:item.active="{ item }" class="text-center">
+      <v-chip v-if="item.active === true" class="ma-2" color="green" text-color="white">
+        <v-avatar left>
+          <v-icon>mdi-checkbox-marked-circle</v-icon>
+        </v-avatar>Sim
+      </v-chip>
+      <v-chip v-else class="ma-2" color="red" text-color="white">
+        <v-avatar left>
+          <v-icon>mdi-close-circle</v-icon>
+        </v-avatar>Não
+      </v-chip>
+    </template>
+
     <template v-slot:item.actions="{ item }">
       <v-btn icon color="primary" title="Visualizar dados" class="mr-1" @click="showData(item)">
         <v-icon small>mdi-magnify</v-icon>

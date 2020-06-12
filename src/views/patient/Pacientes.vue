@@ -152,12 +152,12 @@ export default {
     totalDesserts: 0,
     headers: [
       { text: "Nome", align: "start", sortable: true, value: "name" },
-      { text: "RG", value: "rg" },
-      { text: "CPF", value: "cpf" },
-      { text: "Data Nasc.", align: "center", value: "birthday" },
-      { text: "Nome Mãe", value: "mother_name" },
-      { text: "Telefone", value: "phone" },
-      { text: "Última Prescrição", value: "last_prescription" },
+      { text: "RG", value: "rg", sortable: false },
+      { text: "CPF", value: "cpf" , sortable: false},
+      { text: "Data Nasc.", align: "center", value: "birthday", sortable: false },
+      { text: "Nome Mãe", value: "mother_name",  sortable: false },
+      { text: "Telefone", value: "phone" , sortable: false},
+      { text: "Última Prescrição", align: "center", value: "last_prescription", sortable: false },
       { text: "", align: "end", value: "actions", sortable: false }
     ],
     patient: {

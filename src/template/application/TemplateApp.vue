@@ -9,17 +9,20 @@
         </transition>
       </v-container>
     </v-content>
+    <Footer />
   </div>
 </template>
 
 <script>
 import AppBar from "@/template/application/components/AppBar";
 import Navigation from "@/template/application/components/Navigation";
+import Footer from "@/template/application/components/Footer";
 
 export default {
   components: {
     AppBar,
     Navigation,
+    Footer
   }
 };
 </script>

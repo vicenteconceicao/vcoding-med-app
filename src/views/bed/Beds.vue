@@ -115,8 +115,8 @@ export default {
       totalDesserts: 0,
       headers: [
         { text: "Descrição", value: "description" },
-        { text: "Disponível", align: "center", value: "available" },
-        { text: "Ativo", align: "center", value: "active" },
+        { text: "Disponível", align: "center", value: "available", sortable: false },
+        { text: "Ativo", align: "center", value: "active", sortable: false },
         { text: "", align: "end", value: "actions", sortable: false }
       ],
       bed: {

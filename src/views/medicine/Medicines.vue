@@ -146,11 +146,11 @@ export default {
       totalDesserts: 0,
       headers: [
         { text: "Nome", align: "start", sortable: true, value: "name" },
-        { text: "Descrição", value: "description" },
-        { text: "Quantidade", align: "center", value: "amount" },
-        { text: "Unidade", align: "center", value: "unity" },
-        { text: "EV", value: "ev" },
-        { text: "Posologia", value: "dosage" },
+        { text: "Descrição", value: "description" , sortable: false},
+        { text: "Quantidade", align: "center", value: "amount" , sortable: false},
+        { text: "Unidade", align: "center", value: "unity" , sortable: false},
+        { text: "EV", value: "ev" , sortable: false},
+        { text: "Posologia", value: "dosage" , sortable: false},
         { text: "", align: "end", value: "actions", sortable: false }
       ],
       medicine: {
