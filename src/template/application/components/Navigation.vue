@@ -14,7 +14,7 @@
           </v-list-item-icon>
           <v-list-item-title>{{item.description}}</v-list-item-title>
         </v-list-item>
-        <v-list-group v-else :prepend-icon="item.icon" :key="item.id" no-action>
+        <v-list-group v-else :prepend-icon="item.icon" :key="item.id" color="primary" no-action>
           <template v-slot:activator>
             <v-list-item-title>{{item.description}}</v-list-item-title>
           </template>

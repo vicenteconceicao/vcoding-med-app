@@ -11,6 +11,7 @@ import Perfil from '../views/Perfil.vue'
 import Menus from '../views/menu/Menus.vue'
 import Medicines from '../views/medicine/Medicines.vue'
 import Beds from '../views/bed/Beds.vue'
+import PatientResume from '../views/patient/PatientResume.vue'
 
 Vue.use(VueRouter)
 
@@ -28,7 +29,10 @@ const routes = [
   {
     path: '/paciente/:id',
     component: Paciente,
-    props: true
+    props: true,
+    children: [
+      {path: 'resumo', component: PatientResume}
+    ]
   },
   {
     path: '/atendimentos',

@@ -62,9 +62,7 @@
                         label="Disponível">
                         </v-checkbox>
                     </v-col>
-                  </v-row>
-                  <v-row>
-                    <v-col>
+                     <v-col>
                         <v-checkbox 
                         :disabled="disabled"
                         v-model="bed.active"
